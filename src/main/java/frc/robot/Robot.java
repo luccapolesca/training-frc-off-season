@@ -42,18 +42,18 @@ public class Robot extends TimedRobot {
     // construire le bras
     bras = root.append(new MechanismLigament2d("bras", 2, 0, 20, new Color8Bit(0, 150, 155)));
     // Construire l'avant-bras
-    avantbras = bras.append(new MechanismLigament2d("avantBras", 2, 30, 20, new Color8Bit(200, 50, 200)));
+    avantbras = bras.append(new MechanismLigament2d("avantBras", 2, 30, 10, new Color8Bit(200, 50, 200)));
     // Construire la main
     main = avantbras.append(new MechanismLigament2d("Main", 1, 60));
 
     SmartDashboard.putData("Mech2d", mech);
 
-    key2 = new Joystick(2);
+    key2 = new Joystick(0);
   }
 
   @Override
   public void robotPeriodic() {
-    double axis2 = key2.getRawAxis(2);
+    double axis2 = key2.getRawAxis(0);
     SmartDashboard.putNumber("joystick2 axis2", axis2);
 
     double avantbrasAngle = 90 * axis2;
