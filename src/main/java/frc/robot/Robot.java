@@ -25,20 +25,24 @@ public class Robot extends TimedRobot {
   MechanismLigament2d bras = null;
   MechanismLigament2d avantbras = null;
   MechanismLigament2d main = null;
-
+//Joystick
   Joystick key2 = null;
   Joystick key1 = null;
+  Joystick keyD = null;
+  Joystick key3 = null;
+  Joystick keyA = null;
+  Joystick key4 = null;
 //A
   MechanismLigament2d t1 = null;
   MechanismLigament2d t2 = null;
   MechanismLigament2d t3 = null;
   MechanismLigament2d t4 = null;
-  Joystick keyA = null;
+  
 //D
   MechanismLigament2d Y1 = null;
   MechanismLigament2d Y2 = null;
   MechanismLigament2d Y3 = null;
-  Joystick keyD = null;
+  
   
   /**
    * This function is run when the robot is first started up and should be used
@@ -50,7 +54,7 @@ public class Robot extends TimedRobot {
     System.out.println("oui");
     Mechanism2d mech = new Mechanism2d(10, 10);
     // Creation du root
-    MechanismRoot2d root = mech.getRoot("BrasRobotiqueDeLucca", 5, 1);
+    MechanismRoot2d root = mech.getRoot("BrasRobotiqueDeLucca", 2, 0);
     // construire le bras
     bras = root.append(new MechanismLigament2d("bras", 2, 0, 20, new Color8Bit(0, 150, 155)));
     // Construire l'avant-bras
@@ -62,7 +66,7 @@ public class Robot extends TimedRobot {
 
     key2 = new Joystick(0);
     key1 = new Joystick(0);
-
+    key3 = new Joystick(1);
 
 
     Mechanism2d tentacule = new Mechanism2d(20, 20);
@@ -85,31 +89,36 @@ public class Robot extends TimedRobot {
     // SmartDashboard.putData("Tentacules banboles", tentacule);
     SmartDashboard.putData("Mon Tentacules banboles", tentacule);
 
-    keyA = new Joystick(1);
+    keyA = new Joystick(0);
     keyD = new Joystick(0);
+    key3 = new Joystick(1);
+    key4 = new Joystick(1);
   }
 
+  /* (non-Javadoc)
+   * @see edu.wpi.first.wpilibj.IterativeRobotBase#robotPeriodic()
+   */
   /* (non-Javadoc)
    * @see edu.wpi.first.wpilibj.IterativeRobotBase#robotPeriodic()
    */
   @Override
   public void robotPeriodic() {
     double axis2 = key2.getRawAxis(0);
-    SmartDashboard.putNumber("joystick2 axis2", axis2);
-
-    double avantbrasAngle = 45 * axis2;
-    SmartDashboard.putNumber("avantbrasAngle", avantbrasAngle);
-
-    avantbras.setAngle(avantbrasAngle);
-
     double axis1 = key1.getRawAxis(1);
+
+    SmartDashboard.putNumber("joystick2 axis2", axis2);
     SmartDashboard.putNumber("joystick1 axis1", axis1);
 
+    double avantbrasAngle = 30 + 45 * axis2;
+    double mainAngle = 60 + 100 * axis1;
 
-    double mainAngle = 100 * axis1;
+    SmartDashboard.putNumber("avantbrasAngle", avantbrasAngle);
     SmartDashboard.putNumber("mainAngle", mainAngle);
 
-    main.setAngle(mainAngle);
+    avantbras.setAngle(avantbrasAngle);
+    main.setAngle(mainAngle); 
+
+    
 
 // A
     double axisA = keyA.getRawAxis(0);
@@ -119,6 +128,7 @@ public class Robot extends TimedRobot {
     double tentacule1Angle = 50 + 25 * axisA;
     double tentacule2Angle = -100 + -50 * axisA;
     double tentacule3Angle = 30 + 100 * axisA;
+
     SmartDashboard.putNumber("tentaculeAngle", tentaculeAngle);
     SmartDashboard.putNumber("tentacule1Angle", tentacule1Angle);
     SmartDashboard.putNumber("tentacule2Angle", tentacule2Angle);
@@ -130,18 +140,21 @@ public class Robot extends TimedRobot {
     t4.setAngle(tentacule3Angle);
 // D
     double axisD = keyD.getRawAxis(1);
+    double axisW = key3.getRawAxis(0);
+    double axis4 = key4.getRawAxis(1);
     SmartDashboard.putNumber("Joystick-d axisD", axisD);
 
-    var tentaculyLonguer = 6 + 2;
-    // var tentaculyAngle = 50 + 20;
-    // // var tentaculyColor = null;
-
+    var tentaculyLonguer = 6 + 2 * axisD;
+    var tentaculyAngle = 50 + 90 * axisW;
+    int red = (int)(127 + 127 * axis4);
+    Color8Bit tentaculyRed = new Color8Bit(red, 128, 255);
+   
     SmartDashboard.putNumber("tentaculyLongeur", tentaculyLonguer);
-    // SmartDashboard.putNumber("tentaculyAngle", tentaculyAngle);
-
+    SmartDashboard.putNumber("tentaculyAngle", tentaculyAngle);
+ 
     Y1.setLength(tentaculyLonguer);
-
-
+    Y2.setAngle(tentaculyAngle);
+    Y3.setColor(tentaculyRed);
     }
 
 }
