@@ -5,10 +5,11 @@
       "/SmartDashboard/Mech2d": "Mechanism2d",
       "/SmartDashboard/Mon Tentacules banboles": "Mechanism2d",
       "/SmartDashboard/Tentacules banboles": "Mechanism2d",
-      "/SmartDashboard/Tentacules banboles 2": "Mechanism2d"
+      "/SmartDashboard/Tentacules banboles 2": "Mechanism2d",
+      "/SmartDashboard/terrain": "Field2d"
     },
     "windows": {
-      "/SmartDashboard/Mon Tentacules banboles": {
+      "/SmartDashboard/terrain": {
         "window": {
           "visible": true
         }
@@ -16,6 +17,9 @@
     }
   },
   "NetworkTables": {
+    "Persistent Values": {
+      "open": false
+    },
     "transitory": {
       "SmartDashboard": {
         "open": true

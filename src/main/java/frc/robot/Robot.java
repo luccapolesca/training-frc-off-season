@@ -4,8 +4,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -42,7 +44,11 @@ public class Robot extends TimedRobot {
   MechanismLigament2d Y1 = null;
   MechanismLigament2d Y2 = null;
   MechanismLigament2d Y3 = null;
-  
+
+//Terrain 1
+  Field2d field = null;
+  double xPermanent = 0;
+  double yPermanent = 0;
   
   /**
    * This function is run when the robot is first started up and should be used
@@ -93,6 +99,12 @@ public class Robot extends TimedRobot {
     keyD = new Joystick(0);
     key3 = new Joystick(1);
     key4 = new Joystick(1);
+
+    //Creation de mon primiere terrain
+    field = new Field2d();
+    SmartDashboard.putData("terrain", field);
+    
+    
   }
 
   /* (non-Javadoc)
@@ -155,6 +167,30 @@ public class Robot extends TimedRobot {
     Y1.setLength(tentaculyLonguer);
     Y2.setAngle(tentaculyAngle);
     Y3.setColor(tentaculyRed);
+    
+//1ier Terrain
+    boolean Flash = keyA.getRawButton(1);
+    SmartDashboard.putBoolean("Flash", Flash);
+    
+    double xTerrain1 = keyA.getRawAxis(1)/10 + xPermanent;
+    double yTerrain1 = keyA.getRawAxis(0)/10 + yPermanent;
+
+    if (Flash){
+      xTerrain1 = xTerrain1 * xTerrain1;
+      yTerrain1 = yTerrain1 * yTerrain1;
     }
+   
+
+    field.getObject("robot").setPose(xTerrain1, yTerrain1, Rotation2d.fromDegrees(0));
+    SmartDashboard.putNumber("xterrain1", xTerrain1);
+   xPermanent = xTerrain1;
+   yPermanent = yTerrain1;
+
+   if (xPermanent <= 16){
+    xTerrain1 = 15;
+   }
+   
+
+  }
 
 }
