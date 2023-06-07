@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.Random;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -47,8 +49,10 @@ public class Robot extends TimedRobot {
 
 //Terrain 1
   Field2d field = null;
-  double xPermanent = 0;
-  double yPermanent = 0;
+  Enemy enemy1 = null;
+  double xDeplacementPrecedent = 0;
+  double yDeplacementPrecedent = 0;
+  double degreePrecedent = 0;
   
   /**
    * This function is run when the robot is first started up and should be used
@@ -77,14 +81,14 @@ public class Robot extends TimedRobot {
 
     Mechanism2d tentacule = new Mechanism2d(20, 20);
 
-    //A
+    //Tentacule gauche
     MechanismRoot2d root2 = tentacule.getRoot("TentaculesDeLucca", 5, 0);
     t1 = root2.append(new MechanismLigament2d("t1", 6, 90, 40, new Color8Bit(0, 150, 155)));
     t2 = t1.append(new MechanismLigament2d("t2", 4, 50, 27, new Color8Bit(10, 200, 100)));
     t3 = t2.append(new MechanismLigament2d("t3", 5, -100, 15, new Color8Bit(255, 128, 0)));
     t4 = t3.append(new MechanismLigament2d("t4", 2, 30, 20, new Color8Bit(51, 52, 225)));
     
-    //D
+    //Tentacule droit
     MechanismRoot2d aeeee = tentacule.getRoot("aeeee", 15, 20);
     Y1 = aeeee.append(new MechanismLigament2d("Y1", 6, -90, 40, new Color8Bit(155, 155, 0)));
     Y2 = Y1.append(new MechanismLigament2d("Y2", 4, 50, 27, new Color8Bit( 200, 100, 10)));
@@ -103,8 +107,11 @@ public class Robot extends TimedRobot {
     //Creation de mon primiere terrain
     field = new Field2d();
     SmartDashboard.putData("terrain", field);
-    
-    
+
+    //Creer un robot enemy
+    Random randy = new Random();
+    double yInitialEnemy = randy.nextDouble();
+    enemy1 = new Enemy(16, yInitialEnemy * 8, -0.01);
   }
 
   /* (non-Javadoc)
@@ -132,7 +139,7 @@ public class Robot extends TimedRobot {
 
     
 
-// A
+    // Tentacule gauche
     double axisA = keyA.getRawAxis(0);
     SmartDashboard.putNumber("joystick-a axisA", axisA);
 
@@ -150,7 +157,8 @@ public class Robot extends TimedRobot {
     t2.setAngle(tentacule1Angle); 
     t3.setAngle(tentacule2Angle);
     t4.setAngle(tentacule3Angle);
-// D
+
+    // Tentacule droit
     double axisD = keyD.getRawAxis(1);
     double axisW = key3.getRawAxis(0);
     double axis4 = key4.getRawAxis(1);
@@ -168,29 +176,58 @@ public class Robot extends TimedRobot {
     Y2.setAngle(tentaculyAngle);
     Y3.setColor(tentaculyRed);
     
-//1ier Terrain
-    boolean Flash = keyA.getRawButton(1);
-    SmartDashboard.putBoolean("Flash", Flash);
+    /** Robot 1
+     * bouger le robot swerve et l'empecher de sortir du terrain 
+     */ 
+    boolean boutonRapide = keyA.getRawButton(1);
+    SmartDashboard.putBoolean("boutonRapide", boutonRapide);
     
-    double xTerrain1 = keyA.getRawAxis(1)/10 + xPermanent;
-    double yTerrain1 = keyA.getRawAxis(0)/10 + yPermanent;
+    double xDeplacement = keyA.getRawAxis(0)/10;
+    double yDeplacement = keyA.getRawAxis(1)/10;
+    double degree = 45 * axis4;
 
-    if (Flash){
-      xTerrain1 = xTerrain1 * xTerrain1;
-      yTerrain1 = yTerrain1 * yTerrain1;
+    if (boutonRapide){
+      xDeplacement = xDeplacement * 1.1;
+      yDeplacement = yDeplacement * 1.1;
     }
-   
 
-    field.getObject("robot").setPose(xTerrain1, yTerrain1, Rotation2d.fromDegrees(0));
-    SmartDashboard.putNumber("xterrain1", xTerrain1);
-   xPermanent = xTerrain1;
-   yPermanent = yTerrain1;
+    xDeplacement = xDeplacement + xDeplacementPrecedent;
+    yDeplacement = yDeplacement + yDeplacementPrecedent;
+    degree = degree + degreePrecedent;
 
-   if (xPermanent <= 16){
-    xTerrain1 = 15;
-   }
-   
+    SmartDashboard.putNumber("xterrain1", xDeplacement);
 
+    if (xDeplacement > 16){
+      xDeplacement = 16;
+    }
+    
+    if (xDeplacement < 0){
+      xDeplacement = 0;
+    }
+    
+    if (yDeplacement > 8){
+      yDeplacement = 8;
+    }
+
+    if (yDeplacement < 0){
+      yDeplacement = 0;
+    }
+
+    xDeplacementPrecedent = xDeplacement;
+    yDeplacementPrecedent = yDeplacement;
+    degreePrecedent = degree;
+
+    field.getObject("robot").setPose(xDeplacement, yDeplacement, Rotation2d.fromDegrees(degree));
+
+    //Creer un robot enemy
+    
+    enemy1.x = enemy1.x + enemy1.xSpeed;
+    if (enemy1.x <0){
+      enemy1.x = 16;
+    }
+    
+
+    field.getObject("Enemy1").setPose(enemy1.x, enemy1.y, Rotation2d.fromDegrees(-180));
   }
 
 }
