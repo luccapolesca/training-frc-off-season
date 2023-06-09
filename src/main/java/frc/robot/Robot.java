@@ -49,11 +49,16 @@ public class Robot extends TimedRobot {
 
 //Terrain 1
   Field2d field = null;
-  Enemy enemy1 = null;
+  
   double xDeplacementPrecedent = 0;
   double yDeplacementPrecedent = 0;
   double degreePrecedent = 0;
+  Random randy = new Random();
   
+  // Enemies
+  Enemy[] enemyies = null;
+  // Enemy 2
+  // Enemy enemy2 = null;
   /**
    * This function is run when the robot is first started up and should be used
    * for any
@@ -109,9 +114,15 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("terrain", field);
 
     //Creer un robot enemy
-    Random randy = new Random();
+    enemyies = new Enemy[10];
+    for(int i = 0; i < enemyies.length; i++){
     double yInitialEnemy = randy.nextDouble();
-    enemy1 = new Enemy(16, yInitialEnemy * 8, -0.01);
+    double ySpeedEnemy = -0.01 * randy.nextDouble() - 0.01;
+    enemyies[i] = new Enemy(16, yInitialEnemy * 8, ySpeedEnemy);
+    }
+    // Creer un outre enemy
+
+    // enemy2 = new Enemy(16, yInitialEnemy * 8, -0.01);
   }
 
   /* (non-Javadoc)
@@ -187,8 +198,8 @@ public class Robot extends TimedRobot {
     double degree = 45 * axis4;
 
     if (boutonRapide){
-      xDeplacement = xDeplacement * 1.1;
-      yDeplacement = yDeplacement * 1.1;
+      xDeplacement = xDeplacement * 1.5;
+      yDeplacement = yDeplacement * 1.5;
     }
 
     xDeplacement = xDeplacement + xDeplacementPrecedent;
@@ -212,7 +223,6 @@ public class Robot extends TimedRobot {
     if (yDeplacement < 0){
       yDeplacement = 0;
     }
-
     xDeplacementPrecedent = xDeplacement;
     yDeplacementPrecedent = yDeplacement;
     degreePrecedent = degree;
@@ -220,14 +230,38 @@ public class Robot extends TimedRobot {
     field.getObject("robot").setPose(xDeplacement, yDeplacement, Rotation2d.fromDegrees(degree));
 
     //Creer un robot enemy
-    
-    enemy1.x = enemy1.x + enemy1.xSpeed;
-    if (enemy1.x <0){
-      enemy1.x = 16;
-    }
-    
+    for(int i = 0; i < enemyies.length; i++){
+      enemyies[i].x = enemyies[i].x + enemyies[i].xSpeed;
+     
+      if (enemyies[i].x <0){
+        double yInitialEnemy = randy.nextDouble();
+        enemyies[i] = new Enemy(16, yInitialEnemy * 8, -0.01);
+        enemyies[i].x = 16;
+      }
 
-    field.getObject("Enemy1").setPose(enemy1.x, enemy1.y, Rotation2d.fromDegrees(-180));
+      double xDistance = Math.abs(xDeplacement - enemyies[i].x);
+      boolean xSeTouche = xDistance < 0.5;
+
+      double yDistance = Math.abs(yDeplacement - enemyies[i].y);
+      boolean ySeTouche = yDistance < 0.5;
+ 
+      if (xSeTouche && ySeTouche){
+
+        double yInitialEnemy = randy.nextDouble();
+        double ySpeedEnemy = -0.01 * randy.nextDouble() - 0.01;
+ 
+        enemyies[i] = new Enemy(16, yInitialEnemy * 8, ySpeedEnemy);
+        enemyies[i].x = 16;
+      }
+
+      field.getObject("Enemy" + i).setPose(enemyies[i].x, enemyies[i].y, Rotation2d.fromDegrees(-180));
+    }
+
+
   }
 
 }
+//Todo 
+// x du robot est tout jour 0 solmant possible de boujer a y
+// quand vous appuies sur un buton un petit robot est lance horizontalement
+// Si le petit robot touche au enemy le petit robot disparet et le l'enemy revient à droite (x = 16)
