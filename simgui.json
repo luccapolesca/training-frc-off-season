@@ -150,6 +150,11 @@
             255.0
           ]
         },
+        "smallBots": {
+          "length": 0.4099999964237213,
+          "weight": 2.0,
+          "width": 0.34299999475479126
+        },
         "window": {
           "visible": true
         }

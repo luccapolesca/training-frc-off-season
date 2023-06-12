@@ -1,3 +1,9 @@
-Files placed in this directory will be deployed to the RoboRIO into the
-'deploy' directory in the home folder. Use the 'Filesystem.getDeployDirectory' wpilib function
-to get a proper path relative to the deploy directory.
+Todo 
+x du robot est tout jour 0 solmant possible de boujer a y                                           :3
+quand vous appuies sur un buton un petit robot est lance horizontalement                            :3
+Si le petit robot touche au enemy le petit robot disparet et le l'enemy revient à droite (x = 16)   :3
+
+Petit robot est cree quand on clique sur le buton "x"                                               :3
+Si le petit robot touche à droite on le detruit                                                     :3
+Pour detruire un object on fait "= null;"
+Tous les endroits qui utilise la variable smallBots doit verifier si le smallBots n'est pas null
